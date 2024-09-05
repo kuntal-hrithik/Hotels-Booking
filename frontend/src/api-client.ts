@@ -1,5 +1,5 @@
 import type { RegisterFormData } from "./routes/Register";
-import { SignInFormData } from "./routes/SignIn";
+import type { SignInFormData } from "./routes/SignIn";
 
 type ResponseBody = {
   message: string;
@@ -57,8 +57,22 @@ export const validateToken = async () => {
       credentials: "include",
     }
   );
+  //console.log(await response.json());
+
   if (!response.ok) {
     throw new Error("Invalid token");
+  }
+  return response.json();
+};
+
+export const addMyHotel = async (hotelFormData: FormData) => {
+  const response = await fetch("http://localhost:8000/api/my-hotels/add", {
+    method: "POST",
+    credentials: "include",
+    body: hotelFormData,
+  });
+  if (!response.ok) {
+    throw new Error("Failed to add hotel");
   }
   return response.json();
 };
