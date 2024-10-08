@@ -39,7 +39,7 @@ router.post(
           expiresIn: "7d",
         }
       );
-      
+
       res.cookie("auth_token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

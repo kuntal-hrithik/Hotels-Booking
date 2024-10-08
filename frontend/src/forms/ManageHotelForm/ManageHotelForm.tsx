@@ -39,14 +39,13 @@ function ManageHotelForm({ onSave, isLoading }: Props) {
     formData.append("childCount", data.childCount.toString());
     formData.append("pricePerNight", data.pricePerNight.toString());
     formData.append("starRating", data.starRating.toString());
-    data.facilities.forEach((facility) => {
-      formData.append("facilities", facility);
+
+    Array.from(data.imageFiles).forEach((imageFile) => {
+      formData.append("imageFiles", imageFile);
     });
-    Array.from(data.imageFiles).forEach((file, index) => {
-      formData.append("imageFiles" + index, file);
-    });
-    // formData.append("imageFiles", data.imageFiles[0], data.imageFiles[0].name);
-    // onSave(formData);
+    console.log(formData);
+
+    onSave(formData);
   });
   return (
     <FormProvider {...formsMethods}>

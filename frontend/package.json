@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "vite",
-    "ui": "bunx shadcn-ui",
+    "ui": "bunx shadcn@latest",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "preview": "tsc && vite build && vite preview",

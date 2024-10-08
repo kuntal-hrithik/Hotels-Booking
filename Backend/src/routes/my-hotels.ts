@@ -5,7 +5,6 @@ import Hotel, { HotelType } from "../models/hotel";
 import { verify } from "crypto";
 import verifyToken from "../middleware/auth";
 import { body } from "express-validator";
-import { log } from "util";
 const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -32,11 +31,8 @@ router.post(
       .isArray()
       .withMessage("Facilities is required"),
   ],
-
+  upload.array("imageFiles"), //
   async (req: Request, res: Response) => {
-    console.log("helloooljfdd");
-    upload.array("imageFiles", 6)
-
     try {
       const imageFiles = req.files as Express.Multer.File[];
       console.log(imageFiles);
@@ -47,22 +43,28 @@ router.post(
       const uploadPromises = imageFiles.map(async (image) => {
         const b64 = Buffer.from(image.buffer).toString("base64");
         console.log(2);
-        let dataURI = "data" + image.mimetype + ";base64," + b64;
-        const res = await cloudinary.v2.uploader.upload(dataURI);
-
-        return res.url;
+        const dataURI = `data:${image.mimetype};base64,${b64}`;
+        try {
+          const res = await cloudinary.v2.uploader.upload(dataURI);
+          console.log("Upload successful:");
+          return res.url;
+        } catch (error) {
+          console.error("Error uploading to Cloudinary:", error);
+        }
       });
       const imageUrls = await Promise.all(uploadPromises);
       console.log(4);
 
       //if the upload was successfull ,add the hotel urls to new hotel
-      newHotel.imageUrls = imageUrls;
+      newHotel.imageUrls = imageUrls.filter(
+        (url): url is string => url !== undefined
+      );
       newHotel.lastUpdated = new Date();
       newHotel.userId = req.userId;
 
       //save th enew hotel to the database
       const hotel = new Hotel(newHotel);
-      console.log(hotel);
+      console.log("hotel", hotel);
 
       await hotel.save();
       //return a 201 status
