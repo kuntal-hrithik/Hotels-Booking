@@ -1,12 +1,14 @@
+import path from "path";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import * as apiClient from "./api-client";
 import Error from "./components/error";
 import RootLayout from "./components/root-layout";
-import { useAppContext } from "./contexts/AppContext";
 import AddHotel from "./routes/AddHotel";
+import EditHotel from "./routes/EditHotel";
 import Home from "./routes/home";
+import MyHotels from "./routes/MyHotels";
 import Register from "./routes/Register";
+import Search from "./routes/Search";
 import SignIn from "./routes/SignIn";
 
 const routes = [
@@ -15,6 +17,14 @@ const routes = [
     element: (
       <RootLayout>
         <Home />
+      </RootLayout>
+    ),
+  },
+  {
+    path: "/search",
+    element: (
+      <RootLayout>
+        <Search />
       </RootLayout>
     ),
   },
@@ -42,14 +52,32 @@ const routes = [
 const isLoggedIn = true; // or false, depending on your logic
 
 if (isLoggedIn) {
-  routes.push({
-    path: "/add-hotel",
-    element: (
-      <RootLayout>
-        <AddHotel />
-      </RootLayout>
-    ),
-  });
+  routes.push(
+    {
+      path: "/add-hotel",
+      element: (
+        <RootLayout>
+          <AddHotel />
+        </RootLayout>
+      ),
+    },
+    {
+      path: "/edit-hotel/:id",
+      element: (
+        <RootLayout>
+          <EditHotel />
+        </RootLayout>
+      ),
+    },
+    {
+      path: "/my-hotels",
+      element: (
+        <RootLayout>
+          <MyHotels />
+        </RootLayout>
+      ),
+    }
+  );
 }
 
 const router = createBrowserRouter(routes);

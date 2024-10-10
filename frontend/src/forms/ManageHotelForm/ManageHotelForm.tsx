@@ -1,5 +1,8 @@
+import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { MdHotelClass } from "react-icons/md";
 
+import { HotelType } from "../../../../Backend/src/shared/types";
 import DetailSection from "./DetailSection";
 import FacilitiesSection from "./FacilitiesSection";
 import GuestSection from "./GuestSectuin";
@@ -18,18 +21,29 @@ export type HotelFormData = {
   pricePerNight: number;
   starRating: number;
   imageFiles: FileList;
+  imageUrls: string[];
 };
 type Props = {
+  hotel?: HotelType;
   onSave: (hoteFormData: FormData) => void;
   isLoading: boolean;
 };
 
-function ManageHotelForm({ onSave, isLoading }: Props) {
+function ManageHotelForm({ onSave, isLoading, hotel }: Props) {
   const formsMethods = useForm<HotelFormData>();
-  const { handleSubmit } = formsMethods;
+  const { handleSubmit, reset } = formsMethods;
+  useEffect(() => {
+    reset(hotel);
+  }, [hotel, reset]);
+
   const onSubmit = handleSubmit((data: HotelFormData) => {
     console.log(data);
     const formData = new FormData();
+    if (hotel) {
+      formData.append("id", hotel._id);
+    }
+    console.log(formData);
+
     formData.append("name", data.name);
     formData.append("city", data.city);
     formData.append("country", data.country);
@@ -40,10 +54,21 @@ function ManageHotelForm({ onSave, isLoading }: Props) {
     formData.append("pricePerNight", data.pricePerNight.toString());
     formData.append("starRating", data.starRating.toString());
 
+    data.facilities.forEach((facility, index) => {
+      formData.append(`facilities[${index}]`, facility);
+    });
+
+    if (data.imageUrls) {
+      data.imageUrls.forEach((imageUrl, index) => {
+        formData.append(`imageUrls[${index}]`, imageUrl);
+      });
+    }
+
     Array.from(data.imageFiles).forEach((imageFile) => {
       formData.append("imageFiles", imageFile);
     });
     console.log(formData);
+    console.log("ritik");
 
     onSave(formData);
   });

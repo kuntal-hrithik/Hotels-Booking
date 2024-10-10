@@ -1,3 +1,9 @@
+import { json } from "stream/consumers";
+
+import type {
+  HotelSearchResponse,
+  HotelType,
+} from "../../Backend/src/shared/types";
 import type { RegisterFormData } from "./routes/Register";
 import type { SignInFormData } from "./routes/SignIn";
 
@@ -75,4 +81,72 @@ export const addMyHotel = async (hotelFormData: FormData) => {
     throw new Error("Failed to add hotel");
   }
   return response.json();
+};
+
+export const fetchMyHotels = async (): Promise<HotelType[]> => {
+  const response = await fetch("http://localhost:8000/api/my-hotels/get", {
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch hotels");
+  }
+  return response.json() as Promise<HotelType[]>;
+};
+
+export const fetchMyHotelById = async (id: string): Promise<HotelType> => {
+  const response = await fetch(
+    `http://localhost:8000/api/my-hotels/get/${id}`,
+    {
+      credentials: "include",
+    }
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch this hotel");
+  }
+  return response.json() as Promise<HotelType>;
+};
+
+export const updateMyHotelById = async (hotelFormData: FormData) => {
+  const response = await fetch(
+    `http://localhost:8000/api/my-hotels/update/${hotelFormData.get("id")}`,
+    {
+      method: "PUT",
+      credentials: "include",
+      body: hotelFormData,
+    }
+  );
+  console.log(response.json());
+
+  if (!response.ok) {
+    throw new Error("Failed to update hotel");
+  }
+  return response.json();
+};
+
+export type SearchParams = {
+  destination?: string;
+  checkIn?: string;
+  checkOut?: string;
+  adultCount?: string;
+  childCount?: string;
+  page?: string;
+};
+
+export const searchHotels = async (
+  searchParams: SearchParams
+): Promise<HotelSearchResponse> => {
+  const queryParams = new URLSearchParams();
+  queryParams.append("destinaiton", searchParams.destination || "");
+  queryParams.append("checkIn", searchParams.checkIn || "");
+  queryParams.append("checkOut", searchParams.checkOut || "");
+  queryParams.append("adultCount", searchParams.adultCount || "");
+  queryParams.append("childCount", searchParams.childCount || "");
+  queryParams.append("page", searchParams.page || "");
+  const response = await fetch(
+    `http://localhost:8000/api/hotels/search?${queryParams}`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to search hotels");
+  }
+  return response.json() as Promise<HotelSearchResponse>;
 };

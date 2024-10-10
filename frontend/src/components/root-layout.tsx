@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 import Header from "./Header";
 import Hero from "./Hero";
+import SearchBar from "./SearchBar";
 import { TailwindIndicator } from "./tailwind-indicator";
 
 interface Props {
@@ -14,6 +15,10 @@ const RootLayout = ({ children }: Props) => {
     <div className=" flex min-h-screen flex-col scroll-smooth antialiased">
       <Header />
       <Hero></Hero>
+      <div className="container mx-auto">
+        <SearchBar />
+      </div>
+
       <div className="container mx-auto flex-1 py-10">{children}</div>
       <Footer />
       <Outlet />
