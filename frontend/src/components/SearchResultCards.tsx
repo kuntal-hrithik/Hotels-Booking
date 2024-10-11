@@ -6,6 +6,7 @@ import { HotelType } from "../../../Backend/src/shared/types";
 type Props = {
   hotel: HotelType;
 };
+
 export default function SearchResultCards({ hotel }: Props) {
   return (
     <div className="grid grid-cols-1 gap-8 rounded-lg border border-slate-300 p-8 xl:grid-cols-[2fr_3fr] ">

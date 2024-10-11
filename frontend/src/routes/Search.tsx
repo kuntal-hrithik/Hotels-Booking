@@ -3,6 +3,7 @@ import * as apiClient from "@/api-client";
 import { useSearchContext } from "@/contexts/SearchContext";
 import { useQuery } from "react-query";
 
+import Pagination from "@/components/Pagination";
 import SearchResultCards from "@/components/SearchResultCards";
 
 export default function Search() {
@@ -37,6 +38,13 @@ export default function Search() {
           </span>
         </div>
         {data?.data.map((hotel) => <SearchResultCards hotel={hotel} />)}
+        <div>
+          <Pagination
+            page={data?.pagination.page || 1}
+            pages={data?.pagination.pages || 1}
+            onPageChange={(page) => setPage(page)}
+          />
+        </div>
       </div>
     </div>
   );
