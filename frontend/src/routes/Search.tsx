@@ -3,6 +3,8 @@ import * as apiClient from "@/api-client";
 import { useSearchContext } from "@/contexts/SearchContext";
 import { useQuery } from "react-query";
 
+import FacilityTypesFilter from "@/components/FacilityTypesFilter";
+import HotelTypesFilter from "@/components/HotelTypesFilter";
 import Pagination from "@/components/Pagination";
 import SearchResultCards from "@/components/SearchResultCards";
 import StarRatingFilter from "../components/starRatingFilter";
@@ -11,6 +13,10 @@ export default function Search() {
   const search = useSearchContext();
   const [page, setPage] = useState<number>(1);
   const [selectedStars, setSelectedStars] = useState<string[]>([]);
+  const [selectedType, setSelectedType] = useState<string[]>([]);
+  const [selectedFacilityTypes, setSelectedFacilityTypes] = useState<string[]>(
+    []
+  );
   const searchParams = {
     destination: search.destination,
     checkIn: search.checkIn.toISOString(),
@@ -19,6 +25,8 @@ export default function Search() {
     childCount: search.childCount.toString(),
     page: page.toString(),
     stars: selectedStars,
+    types: selectedType,
+    facilities: selectedFacilityTypes,
   };
   const { data } = useQuery(["searchHotels", searchParams], () =>
     apiClient.searchHotels(searchParams)
@@ -29,6 +37,26 @@ export default function Search() {
       event.target.checked
         ? [...prev, starRating]
         : prev.filter((star) => star !== starRating)
+    );
+  };
+  const handleHoteltypeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const hotelType = event.target.value;
+    setSelectedType((prev) =>
+      event.target.checked
+        ? [...prev, hotelType]
+        : prev.filter((type) => type !== hotelType)
+    );
+  };
+  const handleFacilityTypeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const facilityType = event.target.value;
+    setSelectedFacilityTypes((prev) =>
+      event.target.checked
+        ? [...prev, facilityType]
+        : prev.filter((type) => type !== facilityType)
     );
   };
 
@@ -42,6 +70,14 @@ export default function Search() {
           <StarRatingFilter
             selectedStars={selectedStars}
             onChange={handleStarsChange}
+          />
+          <HotelTypesFilter
+            selectdHotelTypes={selectedType}
+            onChange={handleHoteltypeChange}
+          />
+          <FacilityTypesFilter
+            selectedFacilityTypes={selectedFacilityTypes}
+            onChange={handleFacilityTypeChange}
           />
         </div>
       </div>
