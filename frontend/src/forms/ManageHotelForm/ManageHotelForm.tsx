@@ -57,6 +57,7 @@ function ManageHotelForm({ onSave, isLoading, hotel }: Props) {
     data.facilities.forEach((facility, index) => {
       formData.append(`facilities[${index}]`, facility);
     });
+    console.log("hello");
 
     if (data.imageUrls) {
       data.imageUrls.forEach((imageUrl, index) => {
